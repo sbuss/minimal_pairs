@@ -18,8 +18,11 @@ class MinPairFinder(Singleton):
     _rhymes_dict = None
 
     def __init__(self):
-        """To avoid unnecessarily repeating the word of loading the dict,
-        call `get_instance` instead."""
+        """Instantiate a MinPairFinder.
+
+        Note; To avoid unnecessarily repeating the work of loading the dict,
+        call `get_instance` instead.
+        """
         if not self._dict:
             self._dict = cmudict.dict()
         if not self._rhymes_dict:
@@ -31,7 +34,7 @@ class MinPairFinder(Singleton):
         This maps similar phonemes to each other, skipping the first phoneme.
         You end up with a dict like
 
-            {('AU1', 'G', 'Z'): ['dogs', 'logs', ...], ...}
+            {('AO1', 'G', 'Z'): ['dogs', 'logs', ...], ...}
         """
         rhymes = defaultdict(list)
         for (word, pronunciations) in self._dict.iteritems():
