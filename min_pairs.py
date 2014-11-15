@@ -42,7 +42,7 @@ class MinPairFinder(Singleton):
             if word.startswith(letter):
                 yield word
 
-    def get_first_letter_variants(self, letters):
+    def get_first_letter_variants(self, letters, min_len=1, max_len=100):
         rhymes_dict = self.get_rhymes_dict()
         pairs = []
         needs_letters = set(letters)
@@ -51,7 +51,8 @@ class MinPairFinder(Singleton):
         for word in self.words_starting_with(letters[0]):
             for pronunciation in self._dict[word]:
                 has_letters = set()
-                rhymes = rhymes_dict[tuple(pronunciation[1:])]
+                rhymes = filter(lambda rhyme: min_len <= len(rhyme) <= max_len,
+                                rhymes_dict[tuple(pronunciation[1:])])
                 if len(rhymes) < len(letters):
                     break
                 # Filter out words that don't start with the desired letters
