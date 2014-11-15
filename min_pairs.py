@@ -8,10 +8,16 @@ d = cmudict.dict()
 
 
 def get_rhymes_dict():
+    """Get the cmudict as a rhymes dictionary.
+
+    This maps similar phonemes to each other, skipping the first phoneme.
+    You end up with a dict like
+
+        {('AU1', 'G', 'Z'): ['dogs', 'logs', ...], ...}
+    """
     rhymes = defaultdict(list)
-    for (word, prons) in d.iteritems():
-        for pron in prons:
-            rhymes[tuple(pron[1:])].append(word)
+    for (word, pronunciation) in iter(cmudict.entries()):
+        rhymes[tuple(pronunciation[1:])].append(word)
     return rhymes
 
 
