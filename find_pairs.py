@@ -46,3 +46,23 @@ class NMP(object):
                 [(word1, word2) for word2 in
                  filter(pattern.match, word_list_2)])
         return candidates
+
+    def _get_tail_pattern(self, word):
+        vowel, tail = re.match(".([aeiouy]+)(.*)", word).groups()
+        return re.compile(".[aeiouy]+%s$" % tail)
+
+    def near_words_all(self, letters):
+        letters = list(letters)
+        tails = set(map(self._get_tail_pattern,
+                        self.words_starting_with(letters[0])))
+        for letter in letters[1:]:
+            word_list = self.words_starting_with(letter)
+            new_candidates = []
+            print(len(tails))
+            for c, tail in enumerate(tails):
+                if c % 100 == 0:
+                    print(c)
+                new_candidates.extend(filter(tail.match, word_list))
+            tails &= set(self._get_tail_pattern(new_word)
+                         for new_word in new_candidates)
+        return tails
