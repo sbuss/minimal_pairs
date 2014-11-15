@@ -15,14 +15,6 @@ def get_rhymes_dict():
     return rhymes
 
 
-def get_rhymes(target_word):
-    return [
-        (word, pron)
-        for word, pron in d.items()
-        if any(subpron[1:] == target_pron[1:]
-               for subpron in pron for target_pron in d[target_word])]
-
-
 def words_starting_with(letter):
     for word in d.iterkeys():
         if word.startswith(letter):
