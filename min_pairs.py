@@ -4,10 +4,22 @@ import re
 from nltk.corpus import cmudict
 
 
-class MinPairFinder(object):
+class Singleton(object):
+    _instance = None
+
+    @classmethod
+    def get_instance(cls):
+        if not cls._instance:
+            cls._instance = cls()
+        return cls._instance
+
+
+class MinPairFinder(Singleton):
     _dict = None
 
     def __init__(self):
+        """To avoid unnecessarily repeating the word of loading the dict,
+        call `get_instance` instead."""
         if not self._dict:
             self._dict = cmudict.dict()
 
