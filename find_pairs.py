@@ -34,3 +34,15 @@ class NMP(object):
                 [(word1, word2) for word2 in
                  filter(lambda x: edit_distance(word1, x) <= 2, word_list_2)])
         return candidates
+
+    def near_words_2(self, letter1, letter2):
+        word_list_1 = self.words_starting_with(letter1)
+        word_list_2 = self.words_starting_with(letter2)
+        candidates = []
+        for word1 in word_list_1:
+            w1_vowel, w1_tail = re.match(".([aeiouy]+)(.*)", word1).groups()
+            pattern = re.compile(".[aeiouy]+%s$" % w1_tail)
+            candidates.extend(
+                [(word1, word2) for word2 in
+                 filter(pattern.match, word_list_2)])
+        return candidates
