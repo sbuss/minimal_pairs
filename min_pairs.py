@@ -16,14 +16,17 @@ class Singleton(object):
 
 class MinPairFinder(Singleton):
     _dict = None
+    _rhymes_dict = None
 
     def __init__(self):
         """To avoid unnecessarily repeating the word of loading the dict,
         call `get_instance` instead."""
         if not self._dict:
             self._dict = cmudict.dict()
+        if not self._rhymes_dict:
+            self._rhymes_dict = self._get_rhymes_dict()
 
-    def get_rhymes_dict(self):
+    def _get_rhymes_dict(self):
         """Get the cmudict as a rhymes dictionary.
 
         This maps similar phonemes to each other, skipping the first phoneme.
@@ -43,7 +46,12 @@ class MinPairFinder(Singleton):
                 yield word
 
     def get_first_letter_variants(self, letters, min_len=1, max_len=100):
-        rhymes_dict = self.get_rhymes_dict()
+        """Find all rhymes for all words starting with the given letters.
+
+        Args:
+            letters: An iterable of prefixes. Commonly a string made up of
+                first-letters, but a list of prefixes works as well.
+        """
         pairs = []
         needs_letters = set(letters)
         pattern = re.compile("^[%s]" % ''.join(letters))
@@ -52,7 +60,7 @@ class MinPairFinder(Singleton):
             for pronunciation in self._dict[word]:
                 has_letters = set()
                 rhymes = filter(lambda rhyme: min_len <= len(rhyme) <= max_len,
-                                rhymes_dict[tuple(pronunciation[1:])])
+                                self._rhymes_dict[tuple(pronunciation[1:])])
                 if len(rhymes) < len(letters):
                     break
                 # Filter out words that don't start with the desired letters
