@@ -1,3 +1,4 @@
+import itertools
 import re
 
 
@@ -8,7 +9,8 @@ def get_words():
 
 def edit_distance(word1, word2):
     return sum(map(lambda (c1, c2): int(c1 != c2),
-                   zip(list(word1), list(word2))))
+                   itertools.izip_longest(
+                       list(word1), list(word2), fillvalue='#')))
 
 
 class NMP(object):
