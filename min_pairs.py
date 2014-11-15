@@ -1,5 +1,4 @@
 from collections import defaultdict
-import re
 
 from nltk.corpus import cmudict
 
@@ -40,36 +39,46 @@ class MinPairFinder(Singleton):
                 rhymes[tuple(pronunciation[1:])].append(word)
         return rhymes
 
+    def word_to_rhymes(self, word):
+        """Get all rhymes of a word, for all pronunciations, as list of lists.
+        """
+        rhymes = []
+        for pronunciation in self._dict[word]:
+            rhymes.append(self._rhymes_dict[tuple(pronunciation[1:])])
+        return rhymes
+
     def words_starting_with(self, letter):
+        """Find all words starting with the given letter or letters."""
         for word in self._dict.iterkeys():
             if word.startswith(letter):
                 yield word
 
-    def get_first_letter_variants(self, letters, min_len=1, max_len=100):
-        """Find all rhymes for all words starting with the given letters.
+    def get_first_letter_variants(self, prefixes, min_len=1, max_len=100):
+        """Find all rhymes for all words starting with the given prefixes.
 
         Args:
-            letters: An iterable of prefixes. Commonly a string made up of
+            prefixes: An iterable of prefixes. Commonly a string made up of
                 first-letters, but a list of prefixes works as well.
         """
         pairs = []
-        needs_letters = set(letters)
-        pattern = re.compile("^[%s]" % ''.join(letters))
+        needs_prefixes = set(prefixes)
         seen_words = set()
-        for word in self.words_starting_with(letters[0]):
+        for word in self.words_starting_with(prefixes[0]):
             for pronunciation in self._dict[word]:
-                has_letters = set()
+                has_prefixes = set()
                 rhymes = filter(lambda rhyme: min_len <= len(rhyme) <= max_len,
                                 self._rhymes_dict[tuple(pronunciation[1:])])
-                if len(rhymes) < len(letters):
+                if len(rhymes) < len(prefixes):
                     break
-                # Filter out words that don't start with the desired letters
+                # Filter out words that don't start with the desired prefixes
                 filtered_rhymes = []
                 for word in rhymes:
-                    if pattern.match(word) and word not in seen_words:
-                        has_letters.add(word[0])
-                        filtered_rhymes.append(word)
-                        seen_words.add(word)
-                if has_letters == needs_letters:
+                    for prefix in prefixes:
+                        if word.startswith(prefix) and word not in seen_words:
+                            has_prefixes.add(prefix)
+                            filtered_rhymes.append(word)
+                            seen_words.add(word)
+                            break
+                if has_prefixes == needs_prefixes:
                     pairs.append(filtered_rhymes)
         return pairs
