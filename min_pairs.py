@@ -22,7 +22,8 @@ def get_rhymes_dict():
 
 
 def words_starting_with(letter):
-    for word in d.iterkeys():
+    """Get words that start with a given letter."""
+    for word in iter(cmudict.words()):
         if word.startswith(letter):
             yield word
 
