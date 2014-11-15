@@ -1,6 +1,7 @@
 from collections import defaultdict
 import itertools
 import re
+import string
 
 from cmu_dict import parse_cmudict
 
@@ -76,18 +77,26 @@ class CNMP(object):
 
     def __init__(self, *args, **kwargs):
         if not self.words:
-            self.words = dict(parse_cmudict('./cmudict.0.7a'))
+            self.endings = dict(parse_cmudict('./cmudict.0.7a'))
+            self.word_to_endings = {}
+            self.letter_index = defaultdict(list)
+            for ending, words in self.endings.items():
+                for word in words:
+                    self.word_to_endings[word] = ending
+                    self.letter_index[word[0]] = word
 
-    def startswith(self, letter):
-        return filter(lambda word: word.startswith(letter),
-                      self.words.keys())
+    def _all_endings(self, letter):
+        return set(self.word_to_endings[word]
+                   for word in self.letter_index[letter])
 
-    def all_words(self, letters):
-        tails = set()
-        # First find words starting with those letters
-        words = defaultdict(lambda: defaultdict(list))
-        letters = map(upper, list(letters))
-        for letter in letters:
-            for word in self.startswith(letter):
-                words[len(word)][letter].append(word)
-        return words
+    def all_pairs(self, letters):
+        letters = map(string.upper, list(letters))
+        endings = self._all_endings(letters[0])
+        for letter in letters[1:]:
+            endings &= self._all_endings(letter)
+        candidates = []
+        startletter_pattern = re.compile("^[%s]" % "".join(letters))
+        for ending in endings:
+            candidates.append(
+                filter(startletter_pattern.match, self.endings[ending]))
+        return candidates
