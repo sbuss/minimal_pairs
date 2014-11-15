@@ -1,5 +1,8 @@
+from collections import defaultdict
 import itertools
 import re
+
+from cmu_dict import parse_cmudict
 
 
 def get_words():
@@ -66,3 +69,25 @@ class NMP(object):
             tails &= set(self._get_tail_pattern(new_word)
                          for new_word in new_candidates)
         return tails
+
+
+class CNMP(object):
+    words = None
+
+    def __init__(self, *args, **kwargs):
+        if not self.words:
+            self.words = dict(parse_cmudict('./cmudict.0.7a'))
+
+    def startswith(self, letter):
+        return filter(lambda word: word.startswith(letter),
+                      self.words.keys())
+
+    def all_words(self, letters):
+        tails = set()
+        # First find words starting with those letters
+        words = defaultdict(lambda: defaultdict(list))
+        letters = map(upper, list(letters))
+        for letter in letters:
+            for word in self.startswith(letter):
+                words[len(word)][letter].append(word)
+        return words
