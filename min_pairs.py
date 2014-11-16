@@ -85,5 +85,5 @@ class MinPairFinder(Singleton):
                             seen_words.add(word)
                             break
                 if has_prefixes == needs_prefixes:
-                    pairs.append(filtered_rhymes)
-        return pairs
+                    pairs.append(sorted(filtered_rhymes))
+        return sorted(pairs)
