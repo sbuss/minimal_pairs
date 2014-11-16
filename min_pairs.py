@@ -3,6 +3,15 @@ from collections import defaultdict
 from nltk.corpus import cmudict
 
 
+# Convenience methods
+def get_rhymes(word):
+    """Get all rhymes of a word.
+
+    Returns a list of (pronunciation, rhymes) tuples.
+    """
+    return list(MinPairFinder.get_instance().word_to_rhymes(word))
+
+
 class Singleton(object):
     _instance = None
 
@@ -43,12 +52,30 @@ class MinPairFinder(Singleton):
         return rhymes
 
     def word_to_rhymes(self, word):
-        """Get all rhymes of a word, for all pronunciations, as list of lists.
+        """Get all rhymes of a word, for all pronunciations.
+
+        Ards:
+            word: The word you want rhymes for.
+        Yields (pronunciation, [rhymes]) tuples
         """
-        rhymes = []
         for pronunciation in self._dict[word]:
-            rhymes.append(self._rhymes_dict[tuple(pronunciation[1:])])
-        return rhymes
+            key = tuple(pronunciation[1:])
+            yield (pronunciation, self._rhymes_dict[key])
+
+    def min_pairs(self, word, min_len=2, max_len=5):
+        """Find all minimum pairs of the given word.
+
+        Args:
+            word: The word you want minimal pairs for.
+            min_len: The minimum length of the min-pair words. Default 1.
+            max_len: The maximum length of the min-pair rhyming words.
+                Default 100.
+        """
+        pairs = []
+        for pronunciation, rhymes in self.word_to_rhymes(word):
+            pairs.extend(rhyme for rhyme in rhymes
+                         if min_len <= len(rhyme) <= max_len)
+        return pairs
 
     def words_starting_with(self, letter):
         """Find all words starting with the given letter or letters."""
