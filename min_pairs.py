@@ -3,6 +3,15 @@ from collections import defaultdict
 from nltk.corpus import cmudict
 
 
+# Convenience methods
+def get_rhymes(word):
+    """Get all rhymes of a word.
+
+    Returns a list of (pronunciation, rhymes) tuples.
+    """
+    return list(MinPairFinder.get_instance().word_to_rhymes(word))
+
+
 class Singleton(object):
     _instance = None
 
