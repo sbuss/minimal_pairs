@@ -62,6 +62,8 @@ class MinPairFinder(Singleton):
         Args:
             prefixes: An iterable of prefixes. Commonly a string made up of
                 first-letters, but a list of prefixes works as well.
+            min_len: The minimum length of the rhyming words. Default 1.
+            max_len: The maximum length of the rhyming words. Default 100.
         """
         pairs = []
         needs_prefixes = set(prefixes)
