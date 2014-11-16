@@ -49,7 +49,7 @@ For example, say you want to find all minimum pairs that start with either
 ```python
 import min_pairs
 mf = min_pairs.MinPairFinder.get_instance()
-mf.get_first_letter_variants('qr')
+mf.get_prefix_variants('qr')
 # [[u'qana', u'ronna'],
 #  [u'qasr', u'raiser', u'raisor', u'raser', u'rasor', u'razor'],
 #  [u'qi', u'ree', u'reeh', u'rhee'],
@@ -75,7 +75,7 @@ Of you can give it a list of prefixes:
 ```python
 import min_pairs
 mf = min_pairs.MinPairFinder.get_instance()
-mf.get_first_letter_variants(['boo', 'loo'])
+mf.get_prefix_variants(['boo', 'loo'])
 # [[u'boo', u'loo'],
 #  [u'booby', u'looby'],
 #  [u'book', u'look'],

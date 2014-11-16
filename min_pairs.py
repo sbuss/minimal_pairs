@@ -83,7 +83,7 @@ class MinPairFinder(Singleton):
             if word.startswith(letter):
                 yield word
 
-    def get_first_letter_variants(self, prefixes, min_len=1, max_len=100):
+    def get_prefix_variants(self, prefixes, min_len=1, max_len=100):
         """Find all rhymes for all words starting with the given prefixes.
 
         Args:
