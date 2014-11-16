@@ -15,7 +15,7 @@ min_pairs.get_rhymes('dogs')
 #  [u'bogs', u'dogs', u"dogs'", u'logs', u'boggs', u"dog's", u'fogs'])]
 ```
 
-# Get minimun pairs for a word
+# Get minimum pairs for a word
 
 Minimum pairs are basically the same as the rhymes
 
